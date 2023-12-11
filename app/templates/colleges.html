@@ -1,0 +1,38 @@
+{% extends 'master.html' %}
+{% block title %}Colleges{% endblock %}
+
+{% block content %}
+<div>
+    <!-- Table Navbar -->
+    <div class="d-flex justify-content-between" style="width:auto; height:8.5vh; background-color: #245c6c; border-radius: 10px 10px 0 0 !important;">
+        <ul class="ms-2 navbar-nav my-auto">
+            <li class="nav-item">
+                <input class="form-control" type="text" id="search-input" placeholder="Search" style="width: 100%">
+            </li>
+        </ul>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-body-tertiary" style="height: 70vh; overflow-y: scroll; border-radius: 0 0 10px 10px">
+        <table class="table table-light table-hover">
+            <thead class="table table-dark" style="position: sticky;">
+                <tr>
+                    <th style="width: 25%; padding-left:2%">College Code</th>
+                    <th style="width: 45%;">College Name</th>
+                    <!-- Add more table headers if needed -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for college in collegelist %}
+                <tr class="highlightable-row" data-id="{{ college.collegecode }}" style="height: 48px;">
+
+                    <td style="padding-left:2%">{{ college.collegecode }}</td>
+                    <td>{{ college.collegename }}</td>
+                    <!-- Add more table cells if needed -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
