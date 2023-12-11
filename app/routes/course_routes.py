@@ -6,7 +6,7 @@ course = Blueprint('course', __name__)
 @course.route('/courses', methods=['GET'])
 def get_all_courses():
     courses = CourseModel.get_courses()
-    return render_template('courses.html', courses=courses)
+    return render_template('courses.html', courselist=courses)
 
 @course.route('/course/<course_code>', methods=['GET'])
 def get_course(course_code):

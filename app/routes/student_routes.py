@@ -6,7 +6,7 @@ student = Blueprint('student', __name__)
 @student.route('/students', methods=['GET'])
 def get_all_students():
     students = StudentModel.get_students()
-    return render_template('students.html', students=students)
+    return render_template('students.html', studentlist=students)
 
 @student.route('/student/<student_id>', methods=['GET'])
 def get_student(student_id):
