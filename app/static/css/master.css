@@ -1,0 +1,137 @@
+/* Navbar */
+body {
+  background-color: #2b3035;
+}
+
+/* Sidebar */
+#sidebar {
+  height: 100vh;
+  width: 240px;
+  transition: width 0.3s ease;
+}
+#sidebar.collapse {
+  width: 80px;
+}
+.list-group-item {
+  white-space: nowrap; /* Prevent text wrapping in list items */
+}
+.sidebar-list-item {
+  transition: width 0.3s ease, border-radius 0.3s ease, background-color 0.3s;
+  background-color: #212529;
+  border-radius: 0 10px 10px 0 !important; 
+  border: none;
+  color: #f1f1f1;
+  width: 200px;
+  margin-left: 10px;
+}
+#sidebar.collapse .sidebar-list-item {
+  transition: width 0.3s ease, border-radius 0.3s ease;
+  width: 60px;
+  border-radius: 10px !important;
+}
+.sidebar-list-item.active {
+  background-color: #424448;
+}
+.sidebar-list-item:hover {
+  background-color: #5b5d61;
+}
+#sidebar-nav .sidebar-text {
+  opacity: 1;
+  transition: opacity 0.1s;
+}
+#sidebar.collapse #sidebar-nav .sidebar-text {
+  opacity: 0;
+  transition: opacity 0.1;
+}
+
+/* Dashboard styles */
+.content-container{
+  margin-top: 40px;
+}
+.custom-bg-info {
+  background-color: #54bdeb; 
+}
+.custom-bg-white {
+  background-color: #fdfffe; 
+}
+.rectangle-inside {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100.1%;
+  height: 50px;
+  background-color: #245c6c;
+  opacity: 0.8;
+  border-radius: 5px;
+}
+.rectangle {
+  
+  width: 33%px; 
+  height: 150px;
+  opacity: .9; 
+  position: relative;
+
+}
+.rectangle:hover {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 1);
+  cursor: pointer;
+}
+
+
+.rectangle-inside2 {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100.25%;
+  height: 50px;
+  background-color: #245c6c;
+  opacity: 0.9;
+  border-radius: 5px;
+}
+
+.number {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 50px;
+  color: #fff;
+}
+
+.header-bottom {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  color: #fff;
+}
+.header-top {
+  position: absolute;
+  top: 15px;
+  font-size: 18px;
+  color: #fff;
+}
+.header {
+  position: absolute;
+  top: 10px;
+  font-size: 20px;
+  color: #fff;
+}
+
+/* Table style */
+
+thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa; /* Set a background color for the sticky header */
+  z-index: 1; /* Ensure the sticky header is above the scrolling content */
+}
+
+td {
+  font-family: "Google Sans",Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+  font-weight: 600;
+  padding-top: 12px !important;
+}
