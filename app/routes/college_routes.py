@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, render_template
 from app.models.college_models import CollegeModel
 
 college = Blueprint('college', __name__)
@@ -6,15 +6,15 @@ college = Blueprint('college', __name__)
 @college.route('/colleges', methods=['GET'])
 def get_all_colleges():
     colleges = CollegeModel.get_colleges()
-    return jsonify(colleges)
+    return render_template('colleges.html', collegelist=colleges)
 
 @college.route('/college/<collegecode>', methods=['GET'])
 def get_college(collegecode):
     college = CollegeModel.get_college_by_code(collegecode)
     if college:
-        return jsonify(college)
+        return render_template('college_detail.html', college=college)
     else:
-        return jsonify({'message': 'College not found'}), 404
+        return render_template('college_not_found.html'), 404
 
 @college.route('/college', methods=['POST'])
 def add_new_college():
@@ -24,7 +24,7 @@ def add_new_college():
 
     CollegeModel.add_college(collegecode, collegename)
 
-    return jsonify({'message': 'College added successfully'}), 201
+    return render_template('college_added.html', message='College added successfully'), 201
 
 @college.route('/college/<collegecode>', methods=['PUT'])
 def update_existing_college(collegecode):
@@ -33,9 +33,9 @@ def update_existing_college(collegecode):
 
     CollegeModel.update_college(collegecode, collegename)
 
-    return jsonify({'message': 'College updated successfully'})
+    return render_template('college_updated.html', message='College updated successfully')
 
 @college.route('/college/<collegecode>', methods=['DELETE'])
 def delete_college_route(collegecode):
     CollegeModel.delete_college(collegecode)
-    return jsonify({'message': 'College deleted successfully'})
+    return render_template('college_deleted.html', message='College deleted successfully')
