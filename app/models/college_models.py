@@ -39,15 +39,27 @@ class CollegeModel:
             cursor.close()
 
     @classmethod
-    def update_college(cls,collegecode, collegename):
+    def update_college(cls,college_data):
         connection = mysql.connection
         cursor = connection.cursor()
 
-        cursor.execute("UPDATE Colleges SET collegename = %s WHERE collegecode = %s", (collegename, collegecode))
+        try:
+            # Define the SQL query to update an existing college
+            update_query = "UPDATE Colleges SET collegename = %s WHERE collegecode = %s"
+            print(update_query)
+            print(college_data)
+            # Execute the query with the college data
+            cursor.execute(update_query, (college_data['collegename'], college_data['collegecode']))
+            
+            # Commit the transaction to save the changes to the database
+            connection.commit()
 
-        connection.commit()
-        cursor.close()
-        connection.close()
+        except Exception as e:
+            # Handle any errors that may occur during the update
+            connection.rollback()
+            raise e
+        finally:
+            cursor.close()
 
     @classmethod
     def delete_college(cls, collegecode):

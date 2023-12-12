@@ -30,15 +30,25 @@ def add_college():
     return redirect(url_for('college.get_all_colleges'))   
 
 
-@college.route('/update_college/<collegecode>', methods=['POST'])
+@college.route('/update_college', methods=['POST'])
 def update_college():
+
     data = request.form
-    collegecode = data.get('collegecode')
-    collegename = data.get('collegename')
+    collegecode = data.get('editCollegeCode')
+    collegename = data.get('editCollegeName')
 
-    CollegeModel.update_college(collegecode, collegename)
-
-    return render_template('colleges.html', message='College updated successfully')
+    college_data = {
+            'collegecode': collegecode,
+            'collegename': collegename,
+        }
+    try:
+        CollegeModel.update_college(college_data)
+        flash('College edit successfully', 'success')
+        
+    except Exception as e:
+        flash('Failed to edit college', 'error')
+    
+    return redirect(url_for('college.get_all_colleges'))  
 
 
 @college.route('/delete_college/<string:collegecode>', methods=['DELETE'])
@@ -47,8 +57,10 @@ def delete_college(collegecode):
         # Call the delete_college function from college_models.py
         success = CollegeModel.delete_college(collegecode)
         if success:
-            return jsonify({'message': 'College deleted successfully'})
+            flash('College deleted successfully', 'success')
         else:
-            return jsonify({'error': 'Failed to delete college'})
+            flash('Failed to delete college', 'error')
     except Exception as e:
-        return jsonify({'error': 'Failed to delete college'})
+        flash('Failed to delete college', 'error')
+    
+    return redirect(url_for('college.get_all_colleges'))  
