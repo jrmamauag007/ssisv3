@@ -57,6 +57,35 @@
         </div>
     </div>
 
+    <!-- Edit College Modal -->
+    <div class="modal fade" id="editCollegeModal" tabindex="-1" aria-labelledby="editCollegeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCollegeModalLabel">Edit College</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add your edit form here -->
+                    <form method="POST" action="{{ url_for('college.update_college') }}">
+                        <div class="mb-3">
+                            <label for="editCollegeCode" class="form-label">College Code</label>
+                            <input type="text" class="form-control" id="editCollegeCode" name="editCollegeCode" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCollegeName" class="form-label">College Name</label>
+                            <input type="text" class="form-control" id="editCollegeName" name="editCollegeName" required>
+                        </div>
+                    
+                        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Table -->
     <div class="bg-body-tertiary" style="height: 70vh; overflow-y: scroll; border-radius: 0 0 10px 10px">
         <table class="table table-light table-hover">
@@ -74,37 +103,10 @@
                     <td style="padding-left:2%">{{ college.collegecode }}</td>
                     <td>{{ college.collegename }}</td>
                     <td>
-                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editCollegeModal{{ college.collegecode }}">Edit</button>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" onclick="editCollege(this)">Edit</button>
                         <button class="btn btn-danger btn-sm" data-id="{{ college.collegecode }}" onclick="confirmDelete('{{ college.collegecode }}')">Delete</button>
                     </td>
                 </tr>
-
-                <!-- Edit College Modal -->
-                <div class="modal fade" id="editCollegeModal{{ college.collegecode }}" tabindex="-1" aria-labelledby="editCollegeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editCollegeModalLabel">Edit College</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Add your edit form here -->
-                                <form id="editCollegeForm{{ college.collegecode }}">
-                                    <div class="mb-3">
-                                        <label for="editCollegeCode" class="form-label">College Code</label>
-                                        <input type="text" class="form-control" id="editCollegeCode" value="{{ college.collegecode }}" readonly>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="editCollegeName" class="form-label">College Name</label>
-                                        <input type="text" class="form-control" id="editCollegeName" value="{{ college.collegename }}">
-                                    </div>
-                                    <!-- Add more input fields if needed -->
-                                    <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 {% endfor %}
             </tbody>
         </table>
@@ -117,6 +119,7 @@
         // Add logic to refresh the table, for example, by reloading the page or fetching updated data
         location.reload(); // This will reload the page, you may replace it with AJAX for a smoother experience
     }
+
     function editCollege(button) {
         // Get the closest row to the clicked "Edit" button
         var row = $(button).closest('tr');
@@ -126,8 +129,8 @@
         var collegename = row.find('td:eq(1)').text();
         
         // Populate the modal form fields with the retrieved values
-        $('#editCollegeModal #edit-collegecode').val(collegecode);
-        $('#editCollegeModal #edit-collegename').val(collegename);
+        $('#editCollegeModal #editCollegeCode').val(collegecode);
+        $('#editCollegeModal #editCollegeName').val(collegename);
     
         // Show the modal
         $('#editCollegeModal').modal('show');
@@ -141,20 +144,19 @@
                 type: "DELETE",
                 url: `/delete_college/${collegecode}`,  // Update the URL for deleting colleges
                 success: function (data) {
-                    // Handle success, update the UI
-                    // Remove the deleted college's row from the table
-                    $(`.highlightable-row[data-collegecode="${collegecode}"]`).remove();
-                    alert("College deleted successfully");
+                    
                 },
                 error: function (error) {
-                    // Handle errors
-                    console.error('Failed to delete college', error);
-                    alert("Failed to delete college");
+                    
+                },
+                complete: function () {
+                    $(`.highlightable-row[data-collegecode="${collegecode}"]`).remove();
+                    location.reload();
                 }
-            });
+        });
         }
     }
-
+    
 </script>
 
 {% endblock %}
