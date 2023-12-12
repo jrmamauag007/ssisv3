@@ -24,7 +24,8 @@ def create_app():
 
     bootstrap.init_app(app)
     mysql.init_app(app)
-    CSRFProtect(app)
+    #CSRFProtect(app)
+    
 
     from .routes.college_routes import college
     from .routes.course_routes import course
