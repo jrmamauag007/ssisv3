@@ -1,0 +1,32 @@
+{% extends '/master.html' %}
+{% block title %}Student Details{% endblock %}
+
+{% block content %}
+<div>
+    <!-- Table Navbar -->
+    <div class="d-flex justify-content-between" style="width:auto; height:5vh; background-color: #ffffff; border-radius: 10px 10px 0 0 !important;">
+      <button class="btn btn-outline-* text-dark" onclick="goBack()" style="background-color: #ffffff;" type="button">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+    </div>
+
+    <!-- Student Info -->
+    <div class="bg-body-tertiary" id="student-details" style="height: 70vh; overflow-y: scroll; border-radius: 0 0 10px 10px">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Student ID:</strong> {{ student.id }}</li>
+        <li class="list-group-item"><strong>First Name:</strong> {{ student.firstname }}</li>
+        <li class="list-group-item"><strong>Last Name:</strong> {{ student.lastname }}</li>
+        <li class="list-group-item"><strong>Student Year:</strong> {{ student.studentyear }}</li>
+        <li class="list-group-item"><strong>Gender:</strong> {{ student.gender }}</li>
+        <li class="list-group-item"><strong>Course Code:</strong> {{ student.coursecode }}</li>
+        <!-- Add more student details if needed -->
+      </ul>
+    </div>
+</div>
+<script>
+  // JavaScript function to navigate back
+  function goBack() {
+    window.history.back();
+  }
+</script>
+{% endblock %}
