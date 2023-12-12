@@ -28,7 +28,7 @@ setTimeout(function() {
     });
   });
 
-    // Search Script
+    // Search Script for college and courses
 $(document).ready(function() {
   // Listen for changes in the search input field
   $("#search-input").on("input", function() {
@@ -52,11 +52,45 @@ $(document).ready(function() {
           }
       });
 });
-  $(".highlightable-row").each(function () {
-    var status = $(this).find('td:eq(2)').text().trim().toLowerCase();
-    if (status === "resolved") {
-        $(this).addClass("table-secondary");
-        $(this).find('td').css('font-weight', '300');
-    }
+});
+// Search Script for students
+$(document).ready(function() {
+  // Listen for changes in the search input field
+  $("#search-input").on("input", function() {
+      var searchText = $(this).val().toLowerCase();
+
+      // Loop through table rows and hide those that don't match the search text
+      $(".highlightable-row-student").each(function() {
+          // Get all td elements
+          var tdsToSearch = $(this).find('td');
+
+          // Concatenate the text content of each td
+          var rowText = tdsToSearch.map(function() {
+              return $(this).text().toLowerCase();
+          }).get().join(' ');
+
+          // Check if the rowText contains the search text
+          if (rowText.indexOf(searchText) === -1) {
+              $(this).hide();
+          } else {
+              $(this).show();
+          }
+      });
 });
 });
+// Load Student Details
+function loadStudentDetails(studentId) {
+  // Simulate smooth transition to details page
+  $("#student-details").html("Loading..."); // You can load content via AJAX
+
+  // Navigate to details page (replace with actual URL)
+  // Assuming you have a route like /student/<studentId> to handle student details
+  window.location.href = `/student/${studentId}`  ;
+}
+
+// Add click event listener to highlight rows for students
+$(".highlightable-row-student").click(function () {
+  var studentId = $(this).data("id");
+  loadStudentDetails(studentId);
+});
+
