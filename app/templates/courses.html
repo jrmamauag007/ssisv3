@@ -2,6 +2,19 @@
 {% block title %}Courses{% endblock %}
 
 {% block content %}
+
+<!-- Display Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{% if 'success' in category %}success{% else %}danger{% endif %} alert-dismissible fade show m-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+{% endwith %} 
+
 <div>
     <!-- Table Navbar -->
     <div class="d-flex justify-content-between" style="width:auto; height:8.5vh; background-color: #245c6c; border-radius: 10px 10px 0 0 !important;">
@@ -10,6 +23,74 @@
                 <input class="form-control" type="text" id="search-input" placeholder="Search" style="width: 100%">
             </li>
         </ul>
+        <div class="d-flex align-items-center">
+            <button class="btn btn-success btn-sm mx-2" data-bs-toggle="modal" data-bs-target="#addCourseModal">Add Course</button>
+            <button class="btn btn-primary btn-sm mx-2" onclick="refreshTable()">Refresh</button>
+        </div>
+    </div>
+
+
+    <!-- Add Course Modal -->
+    <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCourseModalLabel">Add Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add your add course form here -->
+                    <form method="POST" action="{{ url_for('course.add_course') }}">
+                        
+                        <div class="mb-3">
+                            <label for="addCourseCode" class="form-label">Course Code</label>
+                            <input type="text" class="form-control" id="addCourseCode" name="coursecode" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addCourseName" class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="addCourseName" name="coursename" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addCollegeCode" class="form-label">College Code</label>
+                            <input type="text" class="form-control" id="addCollegeCode" name="collegecode" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm">Add Course</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Course Modal -->
+    <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCourseModalLabel">Edit Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add your edit form here -->
+                    <form method="POST" action="{{ url_for('course.update_course') }}">
+                        <div class="mb-3">
+                            <label for="editCourseCode" class="form-label">Course Code</label>
+                            <input type="text" class="form-control" id="editCourseCode" name="editCourseCode" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCourseName" class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="editCourseName" name="editCourseName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCollegeCode" class="form-label">College Code</label>
+                            <input type="text" class="form-control" id="editCollegeCode" name="editCollegeCode" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Table -->
@@ -18,22 +99,73 @@
             <thead class="table table-dark" style="position: sticky;">
                 <tr>
                     <th style="width: 15%; padding-left:2%">Course Code</th>
-                    <th style="width: 35%;">Course Name</th>
-                    <th style="width: 40%;">College Code</th>
-                    <!-- Add more table headers if needed -->
+                    <th style="width: 55%;">Course Name</th>
+                    <th style="width: 15%;">College Code</th>
+                    <th style="width: 15%;">Actions</th> <!-- Added column for actions -->
                 </tr>
             </thead>
             <tbody>
                 {% for course in courselist %}
-                <tr class="highlightable-row" data-ccode="{{ course.coursecode }}" style="height: 48px;">
+                <tr class="highlightable-row" data-code="{{ course.coursecode }}" style="height: 48px;">
+
                     <td style="padding-left:2%">{{ course.coursecode }}</td>
                     <td>{{ course.coursename }}</td>
                     <td>{{ course.collegecode }}</td>
-                    <!-- Add more table cells if needed -->
+                    <td>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" onclick="editCourse(this)">Edit</button>
+                        <button class="btn btn-danger btn-sm" data-id="{{ course.coursecode }}" onclick="confirmDelete('{{ course.coursecode }}')">Delete</button>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+<script>
+    // JavaScript function to refresh the table (you need to implement this)
+    function refreshTable() {
+        // Add logic to refresh the table, for example, by reloading the page or fetching updated data
+        location.reload(); // This will reload the page, you may replace it with AJAX for a smoother experience
+    }
+
+    function editCourse(button) {
+        // Get the closest row to the clicked "Edit" button
+        var row = $(button).closest('tr');
+        
+        // Retrieve the values from the row cells
+        var coursecode = row.find('td:eq(0)').text();
+        var coursename = row.find('td:eq(1)').text();
+        var collegecode = row.find('td:eq(2)').text();
+        
+        // Populate the modal form fields with the retrieved values
+        $('#editCourseModal #editCourseCode').val(coursecode);
+        $('#editCourseModal #editCourseName').val(coursename);
+        $('#editCourseModal #editCollegeCode').val(collegecode);
+    
+        // Show the modal
+        $('#editCourseModal').modal('show');
+    }
+
+    // JavaScript function to delete course
+    function confirmDelete(coursecode) {
+        if (confirm("Are you sure you want to delete this course?")) {
+            // User confirmed, perform the delete operation
+            $.ajax({
+                type: "DELETE",
+                url: `/course/${coursecode}`,  // Update the URL for deleting courses
+                success: function (data) {
+                    
+                },
+                error: function (error) {
+                    
+                },
+                complete: function () {
+                    $(`.highlightable-row[data-coursecode="${coursecode}"]`).remove();
+                    location.reload();
+                }
+        });
+        }
+    }
+    
+</script>
 {% endblock %}
