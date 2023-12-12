@@ -1,4 +1,5 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, jsonify, flash,redirect, url_for
+
 from app.models.college_models import CollegeModel
 
 college = Blueprint('college', __name__)
@@ -8,34 +9,46 @@ def get_all_colleges():
     colleges = CollegeModel.get_colleges()
     return render_template('colleges.html', collegelist=colleges)
 
-@college.route('/college/<collegecode>', methods=['GET'])
-def get_college(collegecode):
-    college = CollegeModel.get_college_by_code(collegecode)
-    if college:
-        return render_template('college_detail.html', college=college)
-    else:
-        return render_template('college_not_found.html'), 404
+@college.route('/add_college', methods=['POST'])
+def add_college():
+    try:
+        data = request.form
+        collegecode = data.get('collegecode')
+        collegename = data.get('collegename')
 
-@college.route('/college', methods=['POST'])
-def add_new_college():
-    data = request.get_json()
+        college_data = {
+            'collegecode': collegecode,
+            'collegename': collegename,
+        }
+
+        # Call the model function to add a college
+        CollegeModel.add_college(college_data)
+        flash('College created successfully', 'success')
+    except Exception as e:
+        flash('Failed to create the college', 'error')
+
+    return redirect(url_for('college.get_all_colleges'))   
+
+
+@college.route('/update_college/<collegecode>', methods=['POST'])
+def update_college():
+    data = request.form
     collegecode = data.get('collegecode')
-    collegename = data.get('collegename')
-
-    CollegeModel.add_college(collegecode, collegename)
-
-    return render_template('college_added.html', message='College added successfully'), 201
-
-@college.route('/college/<collegecode>', methods=['PUT'])
-def update_existing_college(collegecode):
-    data = request.get_json()
     collegename = data.get('collegename')
 
     CollegeModel.update_college(collegecode, collegename)
 
-    return render_template('college_updated.html', message='College updated successfully')
+    return render_template('colleges.html', message='College updated successfully')
 
-@college.route('/college/<collegecode>', methods=['DELETE'])
-def delete_college_route(collegecode):
-    CollegeModel.delete_college(collegecode)
-    return render_template('college_deleted.html', message='College deleted successfully')
+
+@college.route('/delete_college/<string:collegecode>', methods=['DELETE'])
+def delete_college(collegecode):
+    try:
+        # Call the delete_college function from college_models.py
+        success = CollegeModel.delete_college(collegecode)
+        if success:
+            return jsonify({'message': 'College deleted successfully'})
+        else:
+            return jsonify({'error': 'Failed to delete college'})
+    except Exception as e:
+        return jsonify({'error': 'Failed to delete college'})

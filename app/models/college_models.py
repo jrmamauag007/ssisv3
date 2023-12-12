@@ -14,28 +14,30 @@ class CollegeModel:
         connection.close()
 
         return colleges
+    
     @classmethod
-    def get_college_by_code(cls,collegecode):
-        connection = mysql.connection
-        cursor = connection.cursor(dictionary=True)
-
-        cursor.execute("SELECT * FROM Colleges WHERE collegecode = %s", (collegecode,))
-        college = cursor.fetchone()
-
-        cursor.close()
-        connection.close()
-
-        return college
-    @classmethod
-    def add_college(cls,collegecode, collegename):
+    def add_college(cls,college_data):
+        
         connection = mysql.connection
         cursor = connection.cursor()
 
-        cursor.execute("INSERT INTO Colleges (collegecode, collegename) VALUES (%s, %s)", (collegecode, collegename))
+        try:
+            # Define the SQL query to insert a new college
+            insert_query = "INSERT INTO Colleges (collegecode, collegename) VALUES (%s, %s)"
 
-        connection.commit()
-        cursor.close()
-        connection.close()
+            # Execute the query with the college data
+            cursor.execute(insert_query, (college_data['collegecode'], college_data['collegename']))
+
+            # Commit the transaction to save the changes to the database
+            connection.commit()
+
+        except Exception as e:
+            # Handle any errors, such as duplicate college codes
+            connection.rollback()
+            raise e
+        finally:
+            cursor.close()
+
     @classmethod
     def update_college(cls,collegecode, collegename):
         connection = mysql.connection
@@ -46,13 +48,24 @@ class CollegeModel:
         connection.commit()
         cursor.close()
         connection.close()
+
     @classmethod
-    def delete_college(cls,collegecode):
+    def delete_college(cls, collegecode):
         connection = mysql.connection
         cursor = connection.cursor()
+        try:
+            # Define the SQL query to delete a college by college code
+            delete_query = "DELETE FROM Colleges WHERE collegecode = %s"
 
-        cursor.execute("DELETE FROM Colleges WHERE collegecode = %s", (collegecode,))
+            # Execute the query with the college code
+            cursor.execute(delete_query, (collegecode,))
 
-        connection.commit()
-        cursor.close()
-        connection.close()
+            # Commit the transaction to save the changes to the database
+            connection.commit()
+            return True
+        except Exception as e:
+            # Handle any errors that may occur during the delete operation
+            connection.rollback()
+            raise e
+        finally:
+            cursor.close()
