@@ -14,7 +14,7 @@ CREATE TABLE Courses (
     coursecode VARCHAR(50) PRIMARY KEY NOT NULL,
     coursename VARCHAR(255) DEFAULT NULL,
     collegecode VARCHAR(50) NOT NULL,
-    FOREIGN KEY (collegecode) REFERENCES Colleges(collegecode) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (collegecode) REFERENCES Colleges(collegecode) ON DELETE CASCADE 
 );
 
 CREATE TABLE Students (
@@ -24,5 +24,5 @@ CREATE TABLE Students (
     studentyear VARCHAR(50) DEFAULT NULL,
     gender VARCHAR(10) DEFAULT NULL,
     coursecode VARCHAR(50) DEFAULT NULL,
-    FOREIGN KEY (coursecode) REFERENCES Courses(coursecode) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (coursecode) REFERENCES Courses(coursecode) ON DELETE CASCADE 
 );
