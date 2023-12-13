@@ -52,7 +52,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="addCollegeCode" class="form-label">College Code</label>
-                            <input type="text" class="form-control" id="addCollegeCode" name="collegecode" required>
+
+                            <!-- Dropdown menu for existing college codes -->
+                            <select class="form-select" id="addCollegeCode" name="collegecode" required>
+                                {% for college in collegelist %}
+                                    <option value="{{ college.collegecode }}">{{ college.collegecode }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-success btn-sm">Add Course</button>
                     </form>
@@ -83,7 +89,12 @@
                         </div>
                         <div class="mb-3">
                             <label for="editCollegeCode" class="form-label">College Code</label>
-                            <input type="text" class="form-control" id="editCollegeCode" name="editCollegeCode" required>
+                            <!-- Dropdown menu for existing college codes -->
+                            <select class="form-select" id="editCollegeCode" name="collegecode" required>
+                                {% for college in collegelist %}
+                                    <option value="{{ college.collegecode }}">{{ college.collegecode }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
                     </form>
@@ -151,10 +162,10 @@
         if (confirm("Are you sure you want to delete this course?")) {
             // User confirmed, perform the delete operation
             $.ajax({
+
                 type: "DELETE",
-                url: `/course/${coursecode}`,  // Update the URL for deleting courses
+                url: `/delete_course/${coursecode}`,  // Update the URL for deleting courses
                 success: function (data) {
-                    
                 },
                 error: function (error) {
                     
@@ -163,9 +174,9 @@
                     $(`.highlightable-row[data-coursecode="${coursecode}"]`).remove();
                     location.reload();
                 }
-        });
+            });
         }
     }
     
 </script>
-{% endblock %}
+{% endblock %}  

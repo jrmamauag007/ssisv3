@@ -19,7 +19,6 @@ def create_app():
         MYSQL_DATABASE=DB_NAME,
         MYSQL_HOST=DB_HOST,
         #BOOTSTRAP_SERVE_LOCAL=BOOTSTRAP_SERVE_LOCAL
-        PERMANENT_SESSION_LIFETIME=timedelta(days=1).total_seconds()
     )
 
     bootstrap.init_app(app)
