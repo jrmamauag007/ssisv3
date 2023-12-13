@@ -12,7 +12,7 @@ def get_all_courses():
     courses = CourseModel.get_courses()
     colleges = CollegeModel.get_colleges()
 
-    return render_template("courses.html",courselist=courses, collegelist=colleges, studentlist =students)
+    return render_template("courses.html",courselist=courses, collegelist=colleges)
     
 
 @course.route('/add_course', methods=['POST'])
@@ -64,11 +64,9 @@ def update_course():
 def delete_course(course_code):
     try:
         # Call the delete_college function from college_models.py
-        success = CourseModel.delete_course(course_code)
-        if success:
-            flash('Course deleted successfully', 'success')
-        else:
-            flash('Failed to delete Course', 'error')
+        CourseModel.delete_course(course_code)
+        flash('Course deleted successfully', 'success')
+        
     except Exception as e:
         flash('Failed to delete Course', 'error')
     

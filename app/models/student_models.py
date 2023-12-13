@@ -42,14 +42,14 @@ class StudentModel:
         connection.close()
 
     @classmethod
-    def update_student(cls, student_id, student_data):
+    def update_student(cls, student_data):
         connection = mysql.connection
         cursor = connection.cursor()
 
         cursor.execute("UPDATE Students SET firstname = %s, lastname = %s, studentyear = %s, "
                        "gender = %s, coursecode = %s WHERE id = %s",
                        (student_data['firstname'], student_data['lastname'], student_data['studentyear'],
-                        student_data['gender'], student_data['coursecode'], student_id))
+                        student_data['gender'], student_data['coursecode'], student_data['id']))
 
         connection.commit()
         cursor.close()

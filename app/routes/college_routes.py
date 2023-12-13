@@ -55,11 +55,9 @@ def update_college():
 def delete_college(collegecode):
     try:
         # Call the delete_college function from college_models.py
-        success = CollegeModel.delete_college(collegecode)
-        if success:
-            flash('College deleted successfully', 'success')
-        else:
-            flash('Failed to delete college', 'error')
+        CollegeModel.delete_college(collegecode)
+        flash('College deleted successfully', 'success')
+        
     except Exception as e:
         flash('Failed to delete college', 'error')
     
