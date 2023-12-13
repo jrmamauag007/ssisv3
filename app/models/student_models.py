@@ -11,7 +11,6 @@ class StudentModel:
         students = cursor.fetchall()
 
         cursor.close()
-        connection.close()
 
         return students
 

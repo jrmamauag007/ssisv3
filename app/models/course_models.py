@@ -13,9 +13,11 @@ class CourseModel:
         courses = cursor.fetchall()
 
         cursor.close()
-        connection.close()
 
         return courses
+    
+
+    
     
     @classmethod
     def add_course(cls, course_data):
@@ -34,13 +36,13 @@ class CourseModel:
             cursor.close()
 
     @classmethod
-    def update_course(cls, course_code, course_data):
+    def update_course(cls, course_data):
         connection = mysql.connection
         cursor = connection.cursor()
 
         try:
-            update_query = "UPDATE Courses SET coursename = %s WHERE coursecode = %s"
-            cursor.execute(update_query, (course_data['coursename'], course_code))
+            update_query = "UPDATE Courses SET coursename = %s, collegecode = %s WHERE coursecode = %s"
+            cursor.execute(update_query, (course_data['coursename'],course_data['collegecode'],course_data['coursecode']))
             connection.commit()
 
         except Exception as e:

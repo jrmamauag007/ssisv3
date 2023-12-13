@@ -11,7 +11,6 @@ class CollegeModel:
         colleges = cursor.fetchall()
 
         cursor.close()
-        connection.close()
 
         return colleges
     
