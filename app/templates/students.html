@@ -2,6 +2,18 @@
 {% block title %}Students{% endblock %}
 
 {% block content %}
+<!-- Display Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{% if 'success' in category %}success{% else %}danger{% endif %} alert-dismissible fade show m-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+{% endwith %}
+
 <div>
     <!-- Table Navbar -->
     <div class="d-flex justify-content-between" style="width:auto; height:8.5vh; background-color: #245c6c; border-radius: 10px 10px 0 0 !important;">
@@ -10,6 +22,126 @@
                 <input class="form-control" type="text" id="search-input" placeholder="Search" style="width: 100%">
             </li>
         </ul>
+        <div class="d-flex align-items-center">
+            <button class="btn btn-success btn-sm mx-2" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add Student</button>
+            <button class="btn btn-primary btn-sm mx-2" onclick="refreshTable()">Refresh</button>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStudentModalLabel">Add Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add your add student form here -->
+                    <form method="POST" action="{{ url_for('student.add_student') }}">
+                        <div class="mb-3">
+                            <label for="addStudentID" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="addStudentID" name="studentid" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addFirstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="addFirstName" name="firstname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addLastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="addLastName" name="lastname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addStudentYear" class="form-label">Year</label>
+                            <select class="form-select" id="addStudentYear" name="studentyear" required>
+                                <option value="Freshman">Freshman</option>
+                                <option value="Sophomore">Sophomore</option>
+                                <option value="Junior">Junior</option>
+                                <option value="Senior">Senior</option>
+                                <option value="Irregular">Irregular</option>
+                                <!-- Add more gender options if needed -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addGender" class="form-label">Gender</label>
+                            <select class="form-select" id="addGender" name="gender" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <!-- Add more gender options if needed -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addCourseCode" class="form-label">Course Code</label>
+                            <!-- Dropdown menu for existing course codes -->
+                            <select class="form-select" id="addCourseCode" name="coursecode" required>
+                                {% for course in courselist %}
+                                    <option value="{{ course.coursecode }}">{{ course.coursecode }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm">Add Student</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Student Modal -->
+    <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editStudentModalLabel">Edit Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add your edit form here -->
+                    <form method="POST" action="{{ url_for('student.update_student') }}">
+                        <div class="mb-3">
+                            <label for="editStudentID" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="editStudentID" name="editStudentID" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editFirstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="editFirstName" name="editFirstName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="editLastName" name="editLastName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editStudentYear" class="form-label">Year</label>
+                            <select class="form-select" id="editStudentYear" name="editStudentYear" required>
+                                <option value="Freshman">Freshman</option>
+                                <option value="Sophomore">Sophomore</option>
+                                <option value="Junior">Junior</option>
+                                <option value="Senior">Senior</option>
+                                <option value="Irregular">Irregular</option>
+                                <!-- Add more gender options if needed -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editGender" class="form-label">Gender</label>
+                            <select class="form-select" id="editGender" name="editGender" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <!-- Add more gender options if needed -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCourseCode" class="form-label">Course Code</label>
+                            <!-- Dropdown menu for existing course codes -->
+                            <select class="form-select" id="editCourseCode" name="editCourseCode" required>
+                                {% for course in courselist %}
+                                    <option value="{{ course.coursecode }}">{{ course.coursecode }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Table -->
@@ -19,11 +151,11 @@
                 <tr>
                     <th style="width: 15%; padding-left:2%">Student ID</th>
                     <th style="width: 15%;">First Name</th>
-                    <th style="width: 15%;">Last Name</th>
-                    <th style="width: 15%;">Year</th>
-                    <th style="width: 15%;">Gender</th>
+                    <th style="width: 20%;">Last Name</th>
+                    <th style="width: 10%;">Year</th>
+                    <th style="width: 10%;">Gender</th>
                     <th style="width: 15%;">Course Code</th>
-                    <!-- Add more table headers if needed -->
+                    <th style="width: 15%;">Actions</th> <!-- Added column for actions -->
                 </tr>
             </thead>
             <tbody>
@@ -35,11 +167,67 @@
                     <td>{{ student.studentyear }}</td>
                     <td>{{ student.gender }}</td>
                     <td>{{ student.coursecode }}</td>
-                    <!-- Add more table cells if needed -->
+                    <td>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" onclick="editStudent(this)">Edit</button>
+                        <button class="btn btn-danger btn-sm" data-id="{{ student.id }}" onclick="confirmDelete('{{ student.id }}')">Delete</button>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    // JavaScript function to refresh the table (you need to implement this)
+    function refreshTable() {
+        // Add logic to refresh the table, for example, by reloading the page or fetching updated data
+        location.reload(); // This will reload the page, you may replace it with AJAX for a smoother experience
+    }
+
+    function editStudent(button) {
+        // Get the closest row to the clicked "Edit" button
+        var row = $(button).closest('tr');
+        
+        // Retrieve the values from the row cells
+        var studentid = row.find('td:eq(0)').text();
+        var firstname = row.find('td:eq(1)').text();
+        var lastname = row.find('td:eq(2)').text();
+        var studentyear = row.find('td:eq(3)').text();
+        var gender = row.find('td:eq(4)').text();
+        var coursecode = row.find('td:eq(5)').text();
+        
+        // Populate the modal form fields with the retrieved values
+        $('#editStudentModal #editStudentID').val(studentid);
+        $('#editStudentModal #editFirstName').val(firstname);
+        $('#editStudentModal #editLastName').val(lastname);
+        $('#editStudentModal #editStudentYear').val(studentyear);
+        $('#editStudentModal #editGender').val(gender);
+        $('#editStudentModal #editCourseCode').val(coursecode);
+    
+        // Show the modal
+        $('#editStudentModal').modal('show');
+    }
+
+    // JavaScript function to delete student
+    function confirmDelete(studentid) {
+        if (confirm("Are you sure you want to delete this student?")) {
+            // User confirmed, perform the delete operation
+            $.ajax({
+                type: "DELETE",
+                url: `/delete_student/${studentid}`,  // Update the URL for deleting students
+                success: function (data) {
+                },
+                error: function (error) {
+                    
+                },
+                complete: function () {
+                    $(`.highlightable-row-student[data-id="${studentid}"]`).remove();
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
+
 {% endblock %}
