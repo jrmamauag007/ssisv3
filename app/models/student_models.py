@@ -1,4 +1,6 @@
 from app import mysql
+import cloudinary
+import cloudinary.uploader
 
 class StudentModel:
 
@@ -61,6 +63,41 @@ class StudentModel:
         cursor = connection.cursor()
 
         cursor.execute("DELETE FROM Students WHERE id = %s", (student_id,))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    @classmethod
+    def get_student_with_photo(cls, student_id):
+        connection = mysql.connection
+        cursor = connection.cursor(dictionary=True)
+
+        cursor.execute("SELECT *, photo_url FROM Students WHERE id = %s", (student_id,))
+        student = cursor.fetchone()
+
+        cursor.close()
+        connection.close()
+
+        return student
+
+    @classmethod
+    def update_student_photo(cls, student_id, photo_url):
+        connection = mysql.connection
+        cursor = connection.cursor()
+
+        cursor.execute("UPDATE Students SET photo_url = %s WHERE id = %s", (photo_url, student_id))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    @classmethod
+    def delete_student_photo(cls, student_id):
+        connection = mysql.connection
+        cursor = connection.cursor()
+
+        cursor.execute("UPDATE Students SET photo_url = NULL WHERE id = %s", (student_id,))
 
         connection.commit()
         cursor.close()
