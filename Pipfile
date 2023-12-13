@@ -13,6 +13,7 @@ python-dotenv = "*"
 flask-login = "*"
 mysql-connector-python = "*"
 email-validator = "*"
+cloudinary = "*"
 
 [dev-packages]
 
