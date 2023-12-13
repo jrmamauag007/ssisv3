@@ -24,5 +24,6 @@ CREATE TABLE Students (
     studentyear VARCHAR(50) DEFAULT NULL,
     gender VARCHAR(10) DEFAULT NULL,
     coursecode VARCHAR(50) DEFAULT NULL,
+    photo_url VARCHAR(255),
     FOREIGN KEY (coursecode) REFERENCES Courses(coursecode) ON DELETE CASCADE 
 );
