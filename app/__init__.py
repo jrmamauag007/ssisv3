@@ -1,11 +1,12 @@
 from flask import Flask, session
 from flask_mysql_connector import MySQL
 from flask_bootstrap import Bootstrap
-from config import DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, SECRET_KEY, BOOTSTRAP_SERVE_LOCAL
+from config import DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, SECRET_KEY, CLOUD_NAME, API_KEY, API_SECRET, BOOTSTRAP_SERVE_LOCAL
 from datetime import timedelta
 from flask_wtf.csrf import CSRFProtect
 import cloudinary
 import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
 
 
 mysql = MySQL()
@@ -23,6 +24,11 @@ def create_app():
         #BOOTSTRAP_SERVE_LOCAL=BOOTSTRAP_SERVE_LOCAL
     )
 
+    cloudinary.config(
+        cloud_name = CLOUD_NAME, 
+        api_key=API_KEY, 
+        api_secret=API_SECRET
+    )
     bootstrap.init_app(app)
     mysql.init_app(app)
     #CSRFProtect(app)
