@@ -89,8 +89,15 @@ function loadStudentDetails(studentId) {
 }
 
 // Add click event listener to highlight rows for students
-$(".highlightable-row-student").click(function () {
-  var studentId = $(this).data("id");
-  loadStudentDetails(studentId);
+$(".highlightable-row-student").click(function (event) {
+  // Check if the click originated from a button inside the row
+  if (!$(event.target).is('.btn')) {
+    var studentId = $(this).data("id");
+    loadStudentDetails(studentId);
+  }
 });
 
+// Prevent button click event from propagating to the row
+$(".highlightable-row-student .btn").click(function (event) {
+  event.stopPropagation();
+});
