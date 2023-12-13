@@ -23,7 +23,7 @@ setTimeout(function() {
       // Toggle the value of session.sidebar using Ajax
       $.ajax({
         type: 'GET',
-        url: '/admin/toggle_sidebar',
+        url: '/toggle_sidebar',
       });
     });
   });
