@@ -135,3 +135,7 @@ td {
   font-weight: 600;
   padding-top: 12px !important;
 }
+
+.highlightable-row-student {
+  cursor: pointer
+}
