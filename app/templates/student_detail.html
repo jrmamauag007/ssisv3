@@ -3,6 +3,7 @@
 
 {% block content %}
 <div>
+
     <!-- Table Navbar -->
     <div class="d-flex justify-content-between" style="width:auto; height:5vh; background-color: #ffffff; border-radius: 10px 10px 0 0 !important;">
       <button class="btn btn-outline-* text-dark" onclick="goBack()" style="background-color: #ffffff;" type="button">
@@ -11,16 +12,73 @@
     </div>
 
     <!-- Student Info -->
-    <div class="bg-body-tertiary" id="student-details" style="height: 70vh; overflow-y: scroll; border-radius: 0 0 10px 10px">
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item"><strong>Student ID:</strong> {{ student.id }}</li>
-        <li class="list-group-item"><strong>First Name:</strong> {{ student.firstname }}</li>
-        <li class="list-group-item"><strong>Last Name:</strong> {{ student.lastname }}</li>
-        <li class="list-group-item"><strong>Student Year:</strong> {{ student.studentyear }}</li>
-        <li class="list-group-item"><strong>Gender:</strong> {{ student.gender }}</li>
-        <li class="list-group-item"><strong>Course Code:</strong> {{ student.coursecode }}</li>
-        <!-- Add more student details if needed -->
-      </ul>
+    <div class="bg-body-tertiary d-flex" id="student-details" style="height: 70vh; overflow-y: scroll; border-radius: 0 0 10px 10px;">
+
+      <!-- Display Photo -->
+      <div class="photo-container" style="flex: 1; padding: 15px; display: flex; align-items: center; flex-direction: column; box-sizing: border-box; border-right: 2px solid #ccc; text-align: center;">
+          {% if photo and photo.photo_url %}
+            <img class="mb-3" src="{{ photo.photo_url }}" style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
+          {% else %}
+            <div><span class="bi bi-person-circle" style="font-size: 150px;"></span></div>
+          {% endif %}
+          <!-- Upload Button -->
+          <button type="button" class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload Picture</button>
+      </div>
+
+
+      <!-- Student Details List -->
+      <div class="list-container" style="flex: 2;">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Student ID:</strong> {{ student.id }}</li>
+          <li class="list-group-item"><strong>First Name:</strong> {{ student.firstname }}</li>
+          <li class="list-group-item"><strong>Last Name:</strong> {{ student.lastname }}</li>
+          <li class="list-group-item"><strong>Student Year:</strong> {{ student.studentyear }}</li>
+          <li class="list-group-item"><strong>Gender:</strong> {{ student.gender }}</li>
+          <li class="list-group-item"><strong>Course Code:</strong> {{ student.coursecode }}</li>
+          <!-- Add more student details if needed -->
+        </ul>
+      </div>
+
+      <!-- Upload/Delete Picture Modal -->
+      <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Manage Picture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <!-- Upload Form -->
+                    <form id="uploadForm" action="{{ url_for('student.upload_photo') }}" method="post" enctype="multipart/form-data">
+                      <label for="input">Choose a file:</label>
+                      <input type="file" id="input" name="file" accept="image/*" required>
+
+                      <div>
+                        <img id="imagePreview" class="img-fluid">
+                        <input type="hidden" id="photo" name="photo">
+                        <canvas id="canvasview" style="display: none;"></canvas>
+                      </div>
+
+                      <button type="submit" class="btn btn-primary mt-3">Upload</button>
+                    </form>
+
+                    <!-- Delete Form -->
+                    {% if student.photo_url %}
+                      <form id="deleteForm" action="{{ url_for('student.delete_photo') }}" method="delete">
+                          <p>Current Picture:</p>
+                          <img src="{{ student.photo_url }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
+                          <input type="hidden" name="_method" value="DELETE">
+                          <button type="submit" class="btn btn-danger mt-3">Delete Picture</button>
+                      </form>
+
+ 
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+      </div>
+
     </div>
 </div>
 <script>
@@ -28,5 +86,35 @@
   function goBack() {
     window.history.back();
   }
+
+  $(document).ready(function () {
+      
+      var cropper = new Cropper(document.getElementById('imagePreview'), {
+          aspectRatio: 1,  // Set the aspect ratio for a circular image
+          viewMode: 1,     // Restrict the crop box to not exceed the size of the canvas
+          autoCropArea: 0.8,  // Initial size of the crop box
+          crop: function (event) {
+              // Update the hidden input with cropped image data (base64)
+              var canvas = cropper.getCroppedCanvas();
+              $('#photo').val(canvas.toDataURL());
+          }
+      });
+
+      // Handle file selection
+      $('#input').on('change', function (e) {
+          var input = e.target;
+          var file = input.files[0];
+
+          if (file) {
+              // Load the selected image into Cropper.js
+              var reader = new FileReader();
+              reader.onload = function (e) {
+                  cropper.replace(e.target.result);
+                  $('#canvasview').show();  // Show the hidden canvas
+              };
+              reader.readAsDataURL(file);
+          }
+      });
+  });
 </script>
 {% endblock %}
