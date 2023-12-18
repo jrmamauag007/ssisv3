@@ -55,6 +55,7 @@ def update_course():
         flash('Course edit successfully', 'success')
         
     except Exception as e:
+        print(e)
         flash('Failed to edit course', 'error')
     
     return redirect(url_for('course.get_all_courses')) 

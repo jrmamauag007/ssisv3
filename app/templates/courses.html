@@ -90,7 +90,7 @@
                         <div class="mb-3">
                             <label for="editCollegeCode" class="form-label">College Code</label>
                             <!-- Dropdown menu for existing college codes -->
-                            <select class="form-select" id="editCollegeCode" name="collegecode" required>
+                            <select class="form-select" id="editCollegeCode" name="editCollegeCode" required>
                                 {% for college in collegelist %}
                                     <option value="{{ college.collegecode }}">{{ college.collegecode }}</option>
                                 {% endfor %}
