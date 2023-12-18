@@ -38,7 +38,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Add your add student form here -->
-                    <form method="POST" action="{{ url_for('student.add_student') }}">
+                    <form method="POST" action="{{ url_for('student.add_student') }}" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="addStudentID" class="form-label">Student ID</label>
                             <input type="text" class="form-control" id="addStudentID" name="studentid" required>
@@ -79,6 +79,10 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="addFileInput" class="form-label">Upload Picture</label>
+                            <input type="file" class="form-control" id="addFileInput" name="addFile" accept="image/*">
+                        </div>
                         <button type="submit" class="btn btn-success btn-sm">Add Student</button>
                     </form>
                 </div>
@@ -96,7 +100,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Add your edit form here -->
-                    <form method="POST" action="{{ url_for('student.update_student') }}">
+                    <form method="POST" action="{{ url_for('student.update_student') }}" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="editStudentID" class="form-label">Student ID</label>
                             <input type="text" class="form-control" id="editStudentID" name="editStudentID" readonly>
@@ -136,6 +140,11 @@
                                     <option value="{{ course.coursecode }}">{{ course.coursecode }}</option>
                                 {% endfor %}
                             </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editFileInput" class="form-label">Upload Picture</label>
+                            <input type="file" class="form-control" id="editFileInput" name="editFile" accept="image/*">
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
                     </form>
