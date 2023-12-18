@@ -42,14 +42,28 @@ class StudentModel:
         connection.close()
 
     @classmethod
+    def add_studentwithphoto(cls, student_data):
+        connection = mysql.connection
+        cursor = connection.cursor()
+
+        cursor.execute("INSERT INTO Students (id, firstname, lastname, studentyear, gender, coursecode, photo_url) "
+                       "VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                       (student_data['id'], student_data['firstname'], student_data['lastname'],
+                        student_data['studentyear'], student_data['gender'], student_data['coursecode'], student_data['image_url']))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    @classmethod
     def update_student(cls, student_data):
         connection = mysql.connection
         cursor = connection.cursor()
 
         cursor.execute("UPDATE Students SET firstname = %s, lastname = %s, studentyear = %s, "
-                       "gender = %s, coursecode = %s, photo = %s WHERE id = %s",
+                       "gender = %s, coursecode = %s, photo_url = %s WHERE id = %s",
                        (student_data['firstname'], student_data['lastname'], student_data['studentyear'],
-                        student_data['gender'], student_data['coursecode'],student_data['photo'], student_data['id']))
+                        student_data['gender'], student_data['coursecode'],student_data['image_url'], student_data['id']))
 
         connection.commit()
         cursor.close()
@@ -72,7 +86,7 @@ class StudentModel:
 
         try:
             # Define the SQL query to update the student's profile_picture_url
-            update_query = "UPDATE student SET profile_picture_url = %s WHERE id = %s"
+            update_query = "UPDATE Students SET photo_url = %s WHERE id = %s"
             
             # Execute the query with the image URL and student ID
             cursor.execute(update_query, (image_url, student_id))
@@ -93,7 +107,7 @@ class StudentModel:
 
         try:
             # Get Student Image Url
-            query = "SELECT profile_picture_url FROM student WHERE id = %s"
+            query = "SELECT photo_url FROM Students WHERE id = %s"
             cursor.execute(query, (student_id,))
             result = cursor.fetchone()
             connection.commit()
