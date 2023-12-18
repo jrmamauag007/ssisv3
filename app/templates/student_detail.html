@@ -16,8 +16,8 @@
 
       <!-- Display Photo -->
       <div class="photo-container" style="flex: 1; padding: 15px; display: flex; align-items: center; flex-direction: column; box-sizing: border-box; border-right: 2px solid #ccc; text-align: center;">
-          {% if photo and photo.photo_url %}
-            <img class="mb-3" src="{{ photo.photo_url }}" style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
+          {% if student.photo_url %}
+            <img class="mb-3" src="{{ student.photo_url }}" style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%;">
           {% else %}
             <div><span class="bi bi-person-circle" style="font-size: 150px;"></span></div>
           {% endif %}
@@ -39,44 +39,43 @@
         </ul>
       </div>
 
-      <!-- Upload/Delete Picture Modal -->
+      <!-- Upload Image Form -->
       <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="uploadModalLabel">Manage Picture</h5>
+                    <h5 class="modal-title" id="uploadModalLabel">Upload Picture</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- Your image upload form goes here -->
+                    <form action="/student/upload-image" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="student_id" id="student_id" value="{{ student.id }}">
+                        <!-- File Input -->
+                        <div class="mb-3">
+                            <label for="fileInput" class="form-label"></label>
+                            <input type="file" class="form-control" id="fileInput" name="file" accept="image/*">
+                        </div>
 
-                    <!-- Upload Form -->
-                    <form id="uploadForm" action="{{ url_for('student.upload_photo') }}" method="post" enctype="multipart/form-data">
-                      <label for="input">Choose a file:</label>
-                      <input type="file" id="input" name="file" accept="image/*" required>
+                        <!-- Image preview and Cropper container -->
+                        <div>
+                          <img id="imagePreview" class="img-fluid">
+                          <input type="hidden" id="croppedImageData" name="croppedImageData">
+                          <canvas id="cropperCanvas" style="display: none;"></canvas>
+                        </div>
 
-                      <div>
-                        <img id="imagePreview" class="img-fluid">
-                        <input type="hidden" id="photo" name="photo">
-                        <canvas id="canvasview" style="display: none;"></canvas>
-                      </div>
-
-                      <button type="submit" class="btn btn-primary mt-3">Upload</button>
+                        <!-- Submit -->
+                        <div class="d-flex justify-content-center">
+                          <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
                     </form>
-
-                    <!-- Delete Form -->
-                    {% if student.photo_url %}
-                      <form id="deleteForm" action="{{ url_for('student.delete_photo') }}" method="delete">
-                          <p>Current Picture:</p>
-                          <img src="{{ student.photo_url }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;">
-                          <input type="hidden" name="_method" value="DELETE">
-                          <button type="submit" class="btn btn-danger mt-3">Delete Picture</button>
-                      </form>
-
- 
-                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+      </div>
       </div>
 
     </div>
@@ -88,20 +87,20 @@
   }
 
   $(document).ready(function () {
-      
+      // Initialize Cropper.js
       var cropper = new Cropper(document.getElementById('imagePreview'), {
           aspectRatio: 1,  // Set the aspect ratio for a circular image
           viewMode: 1,     // Restrict the crop box to not exceed the size of the canvas
-          autoCropArea: 0.8,  // Initial size of the crop box
+          autoCropArea: 1,  // Initial size of the crop box
           crop: function (event) {
               // Update the hidden input with cropped image data (base64)
               var canvas = cropper.getCroppedCanvas();
-              $('#photo').val(canvas.toDataURL());
+              $('#croppedImageData').val(canvas.toDataURL());
           }
       });
 
       // Handle file selection
-      $('#input').on('change', function (e) {
+      $('#fileInput').on('change', function (e) {
           var input = e.target;
           var file = input.files[0];
 
@@ -110,7 +109,8 @@
               var reader = new FileReader();
               reader.onload = function (e) {
                   cropper.replace(e.target.result);
-                  $('#canvasview').show();  // Show the hidden canvas
+                  $('#cropperCanvas').show();  // Show the hidden canvas
+                  
               };
               reader.readAsDataURL(file);
           }
