@@ -54,27 +54,16 @@ def add_student():
 
 
             print("1")
-        if image_url == None:
-            student_data = {
-                'id': id,
-                'firstname': firstname,
-                'lastname': lastname,
-                'studentyear': studentyear,
-                'gender': gender,
-                'coursecode': coursecode
-            }
-            StudentModel.add_student(student_data)
-        else: 
-            student_data = {
-                'id': id,
-                'firstname': firstname,
-                'lastname': lastname,
-                'studentyear': studentyear,
-                'gender': gender,
-                'coursecode': coursecode,
-                'image_url': image_url
-            }
-            StudentModel.add_studentwithphoto(student_data)
+        student_data = {
+            'id': id,
+            'firstname': firstname,
+            'lastname': lastname,
+            'studentyear': studentyear,
+            'gender': gender,
+            'coursecode': coursecode,
+            'image_url': image_url
+        }
+        StudentModel.add_student(student_data)
         
         flash('Student created successfully', 'success')
     except Exception as e:
@@ -106,6 +95,8 @@ def update_student():
         
         image = request.files.get('editFile')
         student_id = id
+        image_url = None
+
         print(image.content_length)
         # Check if a file was provided
         if image:
