@@ -32,19 +32,53 @@ def add_student():
         gender = data.get('gender')
         coursecode = data.get('coursecode')
 
-        student_data = {
-            'id': id,
-            'firstname': firstname,
-            'lastname': lastname,
-            'studentyear': studentyear,
-            'gender': gender,
-            'coursecode': coursecode
-        }
+        image = request.files.get('addFile')
+        student_id = id
+        image_url = None
+    
+        # Check if a file was provided
+        if image:
+            # Convert image data size from bytes to megabytes
+            image_size_mb = image.content_length / (1024 * 1024)
 
-        # Call the model function to add a student
-        StudentModel.add_student(student_data)
+            # Check if the image size exceeds the limit
+            if image_size_mb > 5:
+                flash(f'Image size exceeds the maximum limit of {5} MB', 'error')
+                return redirect(url_for('student.get_all_students'))
+
+            upload_result = cloudinary.uploader.upload(image)
+            image_url = upload_result['url']
+
+            student_model_instance = StudentModel()
+            student_model_instance.associate_image_url(image_url, student_id)
+
+
+            print("1")
+        if image_url == None:
+            student_data = {
+                'id': id,
+                'firstname': firstname,
+                'lastname': lastname,
+                'studentyear': studentyear,
+                'gender': gender,
+                'coursecode': coursecode
+            }
+            StudentModel.add_student(student_data)
+        else: 
+            student_data = {
+                'id': id,
+                'firstname': firstname,
+                'lastname': lastname,
+                'studentyear': studentyear,
+                'gender': gender,
+                'coursecode': coursecode,
+                'image_url': image_url
+            }
+            StudentModel.add_studentwithphoto(student_data)
+        
         flash('Student created successfully', 'success')
     except Exception as e:
+        print(e)
         flash('Failed to create the Student', 'error')
 
     return redirect(url_for('student.get_all_students'))   
@@ -69,6 +103,37 @@ def update_student():
         studentyear = data.get('editStudentYear')
         gender = data.get('editGender')
         coursecode = data.get('editCourseCode')
+        
+        image = request.files.get('editFile')
+        student_id = id
+        print(image.content_length)
+        # Check if a file was provided
+        if image:
+            # Convert image data size from bytes to megabytes
+            image_size_mb = image.content_length / (1024 * 1024)
+
+            # Check if the image size exceeds the limit
+            if image_size_mb > 5:
+                flash(f'Image size exceeds the maximum limit of {5} MB', 'error')
+                return redirect(url_for('student.get_student', student_id=student_id))
+            print("1")
+            print("2")
+
+            # Upload the file to Cloudinary
+            oldimage = StudentModel.get_student_image_url(student_id)
+            if oldimage:
+                parsed_url = urlparse(oldimage)
+                public_id = parsed_url.path.split("/")[-1].split(".")[0]
+                cloudinary.uploader.destroy(public_id)
+                print(public_id)
+
+            print("3")
+            upload_result = cloudinary.uploader.upload(image)
+            print("4")
+            image_url = upload_result['url']
+        
+            student_model_instance = StudentModel()
+            student_model_instance.associate_image_url(image_url, student_id)
 
         student_data = {
             'id': id,
@@ -76,13 +141,14 @@ def update_student():
             'lastname': lastname,
             'studentyear': studentyear,
             'gender': gender,
-            'coursecode': coursecode
+            'coursecode': coursecode,
+            'image_url': image_url
         }
 
-        # Call the model function to add a student
         StudentModel.update_student(student_data)
         flash('Student edit successfully', 'success')
     except Exception as e:
+        print(e)
         flash('Failed to edit Student', 'error')
 
     return redirect(url_for('student.get_all_students'))
@@ -108,12 +174,12 @@ def upload_image():
     try:
         # Assuming you have a form with an input field named 'file'
         student_id = request.form['student_id']
-        cropped_image_data = request.form['croppedImageData']
-
+        image = request.files['file']
+        
         # Check if a file was provided
-        if cropped_image_data:
+        if image:
             # Convert image data size from bytes to megabytes
-            image_size_mb = len(cropped_image_data) / (1024 * 1024)
+            image_size_mb = image.content_length / (1024 * 1024)
 
             # Check if the image size exceeds the limit
             if image_size_mb > 5:
@@ -134,11 +200,14 @@ def upload_image():
                 cloudinary.uploader.destroy(public_id)
                 print(public_id)
 
-            upload_result = cloudinary.uploader.upload(cropped_image_data)
+            upload_result = cloudinary.uploader.upload(image)
             image_url = upload_result['url']
-            StudentModel.associate_image_url(image_url, student_id)
+        
+
+            student_model_instance = StudentModel()
+            student_model_instance.associate_image_url(image_url, student_id)
             flash('Image uploaded successfully', 'success')
-            return redirect(url_for('student_bp.get_student', student_id=student_id))
+            return redirect(url_for('student.get_student', student_id=student_id))
         else:
             flash('No or Invalid File detected', 'error')
             return redirect(url_for('student.get_student', student_id=student_id))
