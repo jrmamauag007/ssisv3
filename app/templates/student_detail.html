@@ -57,13 +57,6 @@
                             <input type="file" class="form-control" id="fileInput" name="file" accept="image/*">
                         </div>
 
-                        <!-- Image preview and Cropper container -->
-                        <div>
-                          <img id="imagePreview" class="img-fluid">
-                          <input type="hidden" id="croppedImageData" name="croppedImageData">
-                          <canvas id="cropperCanvas" style="display: none;"></canvas>
-                        </div>
-
                         <!-- Submit -->
                         <div class="d-flex justify-content-center">
                           <button type="submit" class="btn btn-primary">Submit</button>
@@ -86,35 +79,22 @@
     window.history.back();
   }
 
-  $(document).ready(function () {
-      // Initialize Cropper.js
-      var cropper = new Cropper(document.getElementById('imagePreview'), {
-          aspectRatio: 1,  // Set the aspect ratio for a circular image
-          viewMode: 1,     // Restrict the crop box to not exceed the size of the canvas
-          autoCropArea: 1,  // Initial size of the crop box
-          crop: function (event) {
-              // Update the hidden input with cropped image data (base64)
-              var canvas = cropper.getCroppedCanvas();
-              $('#croppedImageData').val(canvas.toDataURL());
-          }
-      });
+  // Handle file selection
+  function uploadFile() {
+      var input = document.getElementById('fileInput');
+      var file = input.files[0];
 
-      // Handle file selection
-      $('#fileInput').on('change', function (e) {
-          var input = e.target;
-          var file = input.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          // Set the data URL as the value of the hidden input
+          document.getElementById('file').value = e.target.result;
 
-          if (file) {
-              // Load the selected image into Cropper.js
-              var reader = new FileReader();
-              reader.onload = function (e) {
-                  cropper.replace(e.target.result);
-                  $('#cropperCanvas').show();  // Show the hidden canvas
-                  
-              };
-              reader.readAsDataURL(file);
-          }
-      });
-  });
+          // Submit the form
+          document.getElementById('uploadForm').submit();
+        };
+        reader.readAsDataURL(file);
+      }
+    }  
 </script>
 {% endblock %}
