@@ -37,40 +37,46 @@ def add_student():
         student_id = id
         image_url = None
     
-        if is_valid_id(id): 
+        if not_valid_id(id):
+            flash('Not Valid ID(YYYY-NNNN)', 'error')
+            return redirect(url_for('student.get_all_students'))
         # Check if a file was provided
-            if image:
-                # Convert image data size from bytes to megabytes
-                image_size_mb = image.content_length / (1024 * 1024)
+        if image:
+            # Convert image data size from bytes to megabytes
+            image_size_mb = image.content_length / (1024 * 1024)
 
-                # Check if the image size exceeds the limit
-                if image_size_mb > 5:
-                    flash(f'Image size exceeds the maximum limit of {5} MB', 'error')
-                    return redirect(url_for('student.get_all_students'))
+            # Check if the image size exceeds the limit
+            if image_size_mb > 5:
+                flash(f'Image size exceeds the maximum limit of {5} MB', 'error')
+                return redirect(url_for('student.get_all_students'))
+            
+            filename = secure_filename(request.files['addFile'].filename)
+            if not allowed_file(filename):
+                flash(f'Invalid file extension. Allowed extensions are: {", ".join(ALLOWED_EXTENSIONS)}', 'error')
+                return redirect(url_for('student.get_all_students'))
 
-                upload_result = cloudinary.uploader.upload(image)
-                image_url = upload_result['url']
+            upload_result = cloudinary.uploader.upload(image)
+            image_url = upload_result['url']
 
-                student_model_instance = StudentModel()
-                student_model_instance.associate_image_url(image_url, student_id)
-                print("1")
+            student_model_instance = StudentModel()
+            student_model_instance.associate_image_url(image_url, student_id)
+            print("1")
 
 
-                print("2")
-                print(image_url)
-            student_data = {
-                'id': id,
-                'firstname': firstname,
-                'lastname': lastname,
-                'studentyear': studentyear,
-                'gender': gender,
-                'coursecode': coursecode,
-                'image_url': image_url
-            }
-            StudentModel.add_student(student_data)
-            flash('Student created successfully', 'success')
-        else:
-            flash("You can't duplicate student id", 'error')
+            print("2")
+            print(image_url)
+        student_data = {
+            'id': id,
+            'firstname': firstname,
+            'lastname': lastname,
+            'studentyear': studentyear,
+            'gender': gender,
+            'coursecode': coursecode,
+            'image_url': image_url
+        }
+        StudentModel.add_student(student_data)
+        
+        flash('Student created successfully', 'success')
     except Exception as e:
         print(e)
         flash('Failed to create the Student. Error: {}'.format(str(e)), 'error')
@@ -113,15 +119,15 @@ def update_student():
             # Check if the image size exceeds the limit
             if image_size_mb > 5:
                 flash(f'Image size exceeds the maximum limit of {5} MB', 'error')
-                return redirect(url_for('student.get_student', student_id=student_id))
+                return redirect(url_for('student.get_students', student_id=student_id))
             print("1")
             print("2")
 
             # Check if the file extension is allowed
-            filename = secure_filename(request.files['file'].filename)
+            filename = secure_filename(request.files['editFile'].filename)
             if not allowed_file(filename):
                 flash(f'Invalid file extension. Allowed extensions are: {", ".join(ALLOWED_EXTENSIONS)}', 'error')
-                return redirect(url_for('student.get_student', student_id=student_id))
+                return redirect(url_for('student.get_all_students'))
             
             # Upload the file to Cloudinary
             oldimage = StudentModel.get_student_image_url(student_id)
@@ -173,9 +179,9 @@ ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def is_valid_id(id):
+def not_valid_id(id):
     pattern = re.compile(r'^\d{4}-\d{4}$')
-    return bool(pattern.match(id))
+    return not bool(pattern.match(id))
 
 @student.route('/student/upload-image', methods=['POST'])
 def upload_image():

@@ -33,7 +33,7 @@ def add_course():
         CourseModel.add_course(course_data)
         flash('Course created successfully', 'success')
     except Exception as e:
-        flash('Failed to create the Course', 'error')
+        flash('Failed to create Course. Error: {}'.format(str(e)), 'error')
 
     return redirect(url_for('course.get_all_courses'))   
 

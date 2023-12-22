@@ -25,7 +25,7 @@ def add_college():
         CollegeModel.add_college(college_data)
         flash('College created successfully', 'success')
     except Exception as e:
-        flash('Failed to create the college', 'error')
+        flash('Failed to create College. Error: {}'.format(str(e)), 'error')
 
     return redirect(url_for('college.get_all_colleges'))   
 
