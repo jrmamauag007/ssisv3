@@ -18,12 +18,12 @@ CREATE TABLE Courses (
 );
 
 CREATE TABLE Students (
-    id VARCHAR(50) PRIMARY KEY NOT NULL,
+    id VARCHAR(9) PRIMARY KEY NOT NULL,
     firstname VARCHAR(255) DEFAULT NULL,
     lastname VARCHAR(255) DEFAULT NULL,
     studentyear VARCHAR(50) DEFAULT NULL,
     gender VARCHAR(10) DEFAULT NULL,
     coursecode VARCHAR(50) DEFAULT NULL,
-    photo_url VARCHAR(255),
+    photo_url VARCHAR(255) DEFAULT NULL,
     FOREIGN KEY (coursecode) REFERENCES Courses(coursecode) ON DELETE CASCADE 
 );
