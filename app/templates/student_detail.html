@@ -78,23 +78,5 @@
   function goBack() {
     window.history.back();
   }
-
-  // Handle file selection
-  function uploadFile() {
-      var input = document.getElementById('fileInput');
-      var file = input.files[0];
-
-      if (file) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          // Set the data URL as the value of the hidden input
-          document.getElementById('file').value = e.target.result;
-
-          // Submit the form
-          document.getElementById('uploadForm').submit();
-        };
-        reader.readAsDataURL(file);
-      }
-    }  
 </script>
 {% endblock %}
