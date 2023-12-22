@@ -205,12 +205,12 @@
         var row = $(button).closest('tr');
         
         // Retrieve the values from the row cells
-        var studentid = row.find('td:eq(0)').text();
-        var firstname = row.find('td:eq(1)').text();
-        var lastname = row.find('td:eq(2)').text();
-        var studentyear = row.find('td:eq(3)').text();
-        var gender = row.find('td:eq(4)').text();
-        var coursecode = row.find('td:eq(5)').text();
+        var studentid = row.find('td:eq(1)').text();
+        var firstname = row.find('td:eq(2)').text();
+        var lastname = row.find('td:eq(3)').text();
+        var studentyear = row.find('td:eq(4)').text();
+        var gender = row.find('td:eq(5)').text();
+        var coursecode = row.find('td:eq(6)').text();
         
         // Populate the modal form fields with the retrieved values
         $('#editStudentModal #editStudentID').val(studentid);
