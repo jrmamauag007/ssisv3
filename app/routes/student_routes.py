@@ -51,9 +51,11 @@ def add_student():
 
             student_model_instance = StudentModel()
             student_model_instance.associate_image_url(image_url, student_id)
-
-
             print("1")
+
+
+            print("2")
+            print(image_url)
         student_data = {
             'id': id,
             'firstname': firstname,

@@ -32,10 +32,10 @@ class StudentModel:
         connection = mysql.connection
         cursor = connection.cursor()
 
-        cursor.execute("INSERT INTO Students (id, firstname, lastname, studentyear, gender, coursecode) "
-                       "VALUES (%s, %s, %s, %s, %s, %s)",
+        cursor.execute("INSERT INTO Students (id, firstname, lastname, studentyear, gender, coursecode, photo_url) "
+                       "VALUES (%s, %s, %s, %s, %s, %s, %s )",
                        (student_data['id'], student_data['firstname'], student_data['lastname'],
-                        student_data['studentyear'], student_data['gender'], student_data['coursecode']))
+                        student_data['studentyear'], student_data['gender'], student_data['coursecode'],student_data['image_url']))
 
         connection.commit()
         cursor.close()
