@@ -7,7 +7,7 @@ class StudentModel:
         connection = mysql.connection
         cursor = connection.cursor(dictionary=True)
 
-        cursor.execute("SELECT *, collegecode FROM Students JOIN Courses on Students.coursecode = Courses.coursecode")
+        cursor.execute("SELECT * FROM Students JOIN Courses on Students.coursecode = Courses.coursecode JOIN Colleges on Courses.collegecode = Colleges.collegecode ORDER BY id ASC")
         students = cursor.fetchall()
 
         cursor.close()

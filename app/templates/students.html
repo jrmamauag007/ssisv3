@@ -161,11 +161,11 @@
                     <th style="width: 5%; padding-left:2%"></th>
                     <th style="width: 10%;">Student ID</th>
                     <th style="width: 15%;">First Name</th>
-                    <th style="width: 20%;">Last Name</th>
+                    <th style="width: 15%;">Last Name</th>
                     <th style="width: 10%;">Year</th>
                     <th style="width: 10%;">Gender</th>
                     <th style="width: 10%;">Course Code</th>
-                    <th style="width: 10%;">College</th>
+                    <th style="width: 15%;">College</th>
                     <th style="width: 15%;">Actions</th> <!-- Added column for actions -->
                 </tr>
             </thead>
@@ -181,7 +181,7 @@
                     <td>{{ student.studentyear }}</td>
                     <td>{{ student.gender }}</td>
                     <td>{{ student.coursecode }}</td>
-                    <td>{{ student.collegecode }}</td>
+                    <td>{{ student.collegename }}({{ student.collegecode }})</td>
                     <td>
                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" onclick="editStudent(this)">Edit</button>
                         <button class="btn btn-danger btn-sm" data-id="{{ student.id }}" onclick="confirmDelete('{{ student.id }}')">Delete</button>
